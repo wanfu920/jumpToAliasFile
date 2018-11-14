@@ -1,6 +1,7 @@
 # jump-to-alias-file
 
 可以对 webpack 别名路径或者自定义别名路径进行快速跳转的插件.
+**如果你的别名和文件夹名称相同, 通常情况vscode可以识别到, 不需要使用此插件. 如果vscode不能自动识别, 可以使用此扩展**
 
 ![Sample](https://raw.githubusercontent.com/wanfu920/jumpToAliasFile/master/demo.gif)
 

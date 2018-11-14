@@ -143,6 +143,7 @@ export default class WebpackAliasSearcher {
     if (deep > maxDeep) {
       return [];
     }
+    if (!fs.statSync(filePath).isDirectory()) return [];
 
     // 去除 node_modules test 文件夹, 非 .js 后缀文件, 以及 .开头文件
     let files = fs.readdirSync(filePath)

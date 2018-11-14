@@ -6,6 +6,7 @@
   "engines": {
     "vscode": "^1.18.0"
   },
+  "icon": "./favicon.ico",
   "repository": {
     "type": "git",
     "url": "https://github.com/wanfu920/jumpToAliasFile"
