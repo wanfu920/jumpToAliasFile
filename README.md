@@ -1,12 +1,21 @@
-# Completion Item Provider Sample
+# jump-to-alias-file
 
-This sample shows how to provide completions aka IntelliSense into the editor. The sample uses the `CompletionItemProvider` api.
+可以对 webpack 别名路径或者自定义别名路径进行快速跳转的插件.
 
 ![Sample](demo.gif)
 
 
-## VS Code API
+### Configuration
+如果使用的是 webpack 别名路径, 99% 的情况不需要做任何设置, 插件可以智能的识别出 webpack alias, 并进行自动设置.
+- alias: 别名路径映射, 路径为绝对路径
+```
+"jumpToAliasFile.alias": {
+  "@": "/Users/xxx/project/src",
+}
+```
+- webpeckConfigPath: webpack config 文件路径, 路径可以为绝对路径或者相对路径(相对项目根目录)
+```
+"jumpToAliasFile.webpeckConfigPath": "./webpack.config.json"
+```
 
-### `vscode` module
-
-- [`languages.registerCompletionItemProvider`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#languages.registerCompletionItemProvider)
+### FAQ

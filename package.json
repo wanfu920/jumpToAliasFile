@@ -1,11 +1,23 @@
 {
   "name": "jump-to-alias-file",
+  "displayName": "jump-to-alias-file",
   "version": "1.0.0",
+  "publisher": "wanfu",
   "engines": {
     "vscode": "^1.18.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wanfu920/jumpToAliasFile"
+  },
   "categories": [
     "Programming Languages"
+  ],
+  "keywords": [
+    "go to definition",
+    "webpack alias",
+    "jump to alias file",
+    "jump"
   ],
   "activationEvents": [
     "*"

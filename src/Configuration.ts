@@ -11,9 +11,9 @@ export default class Configuration {
     this._workspaceDir = vscode.workspace.rootPath;
     this._syncConfiguration();
     this._listenConfigChange();
-    this._webpackAliasSearcher = new WebpackAliasSearcher(this._workspaceDir);
     if (!Object.keys(this.alias).length) {
       // 不存在 alias 时, 走自动寻找 alias 策略
+      this._webpackAliasSearcher = new WebpackAliasSearcher(this._workspaceDir);
       let alias = this._webpackAliasSearcher.getDefaultAlias();
       this.alias = { ...this.alias, ...alias };
     }
