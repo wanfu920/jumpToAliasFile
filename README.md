@@ -2,7 +2,7 @@
 
 可以对 webpack 别名路径或者自定义别名路径进行快速跳转的插件.
 
-![Sample](demo.gif)
+![Sample](https://raw.githubusercontent.com/wanfu920/jumpToAliasFile/master/demo.gif)
 
 
 ### Configuration
