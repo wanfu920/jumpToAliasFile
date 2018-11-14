@@ -26,4 +26,3 @@
 ### FAQ
 
 ### TodoList
-- 动态引入支持 import('@/api')
