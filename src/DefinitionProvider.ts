@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import Configuration from './Configuration';
 import { fixFilePathExtension } from './util';
 
@@ -10,10 +11,17 @@ export default class DefinitionProvider implements vscode.DefinitionProvider {
   }
   private async _getFileRealPosition(document: vscode.TextDocument, position: vscode.Position) {
     const pathObj = this._getImportPathObj(document.lineAt(position));
+
     let realFilePath: string;
     if (pathObj && pathObj.range.contains(position)) {
       realFilePath = this._tranformAliasPath(pathObj.path);
+
+      // 由于 vscode 不能正确识别 vue 文件的正常导入, 所以此处添加对 vue 文件的正常引入支持
+      if (!realFilePath && document.fileName.endsWith('.vue') && pathObj.path.startsWith('.')) {
+        realFilePath = path.resolve(document.fileName, '../', pathObj.path);
+      }
     }
+
     if (realFilePath) {
       realFilePath = await fixFilePathExtension(realFilePath)
     }

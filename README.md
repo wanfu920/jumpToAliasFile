@@ -1,7 +1,11 @@
 # jump-to-alias-file
 
 可以对 webpack 别名路径或者自定义别名路径进行快速跳转的插件.
-**如果你的别名和文件夹名称相同, 通常情况vscode可以识别到, 不需要使用此插件. 如果vscode不能自动识别, 可以使用此扩展**
+### 适用场景
+- 自定义文件夹别名和文件夹名称不同, 比如: `"@comp": "src/components"`, 别名`@comp`和文件夹名称`components`是不同的
+- .vue 文件, vscode 不能正确识别 .vue 文件的引入
+
+**如果你的自定义文件夹别名和文件夹名称相同, 如`"components": "src/components"`, 别名`components`和文件夹名称`components`是相同的， 通常情况下vscode可以识别到, 不需要使用此插件. 如果vscode不能自动识别, 可以使用此扩展**
 
 ![Sample](https://raw.githubusercontent.com/wanfu920/jumpToAliasFile/master/demo.gif)
 
@@ -20,3 +24,6 @@
 ```
 
 ### FAQ
+
+### TodoList
+- 动态引入支持 import('@/api')
