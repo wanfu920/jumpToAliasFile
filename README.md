@@ -1,5 +1,3 @@
-# jump-to-alias-file
-
 可以对 webpack 别名路径或者自定义别名路径进行快速跳转的插件.
 ### 适用场景
 - 自定义文件夹别名和文件夹名称不同, 比如: `"@comp": "src/components"`, 别名`@comp`和文件夹名称`components`是不同的
