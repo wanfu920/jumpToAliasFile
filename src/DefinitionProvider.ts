@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import Configuration from './Configuration';
-import { fixFilePathExtension } from './util';
+import { fixFilePathExtension, extractImportPathFromTextLine, getFileZeroLocationFromFilePath } from './util';
 
 export default class DefinitionProvider implements vscode.DefinitionProvider {
   constructor(private readonly _configuration: Configuration) {
@@ -11,7 +11,7 @@ export default class DefinitionProvider implements vscode.DefinitionProvider {
   }
   private async _getFileRealPosition(document: vscode.TextDocument, position: vscode.Position) {
     const textLine = document.lineAt(position)
-    const pathObj = this._getPathObj(textLine);
+    const pathObj = extractImportPathFromTextLine(textLine);
 
     let realFilePath: string;
     if (pathObj && pathObj.range.contains(position)) {
@@ -27,29 +27,8 @@ export default class DefinitionProvider implements vscode.DefinitionProvider {
       realFilePath = await fixFilePathExtension(realFilePath)
     }
     if (realFilePath) {
-      return this._getFileLocationFromPath(realFilePath)
+      return getFileZeroLocationFromFilePath(realFilePath)
     };
-  }
-  private _getPathObj(textLine: vscode.TextLine): { path: string, range: vscode.Range } | undefined {
-    const pathRegs = [
-      /import\s+.*\s+from\s+['"](.*)['"]/,
-      /import\s*\(['"](.*)['"]\)/,
-      /require\s*\(['"](.*)['"]\)/,
-    ];
-    let execResult: RegExpMatchArray;
-    for (const pathReg of pathRegs) {
-      execResult = pathReg.exec(textLine.text);
-      if (execResult && execResult[1]) {
-        const filePath = execResult[1];
-        const filePathIndex = execResult[0].indexOf(filePath);
-        const start = execResult.index + filePathIndex;
-        const end = start + filePath.length;
-        return {
-          path: filePath,
-          range: new vscode.Range(textLine.lineNumber, start, textLine.lineNumber, end),
-        };
-      }
-    }
   }
   private _tranformAliasPath(aliasPath: string) {
     let alias = this._configuration.alias;
@@ -64,11 +43,5 @@ export default class DefinitionProvider implements vscode.DefinitionProvider {
         return aliasPath.replace(key + '/', value);
       }
     }
-  }
-  private _getFileLocationFromPath(filePath: string) {
-    let uri = vscode.Uri.file(filePath);
-    let range = new vscode.Range(0, 0, 0, 0);
-    let location = new vscode.Location(uri, range);
-    return location;
   }
 }

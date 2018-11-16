@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import * as vscode from 'vscode';
 
 const extensions = ['.js', '.ts', '.json', '.jsx', '.tsx', '.vue', '.css', '.mcss', '.scss', '.less', '.html'];
 
@@ -50,4 +51,34 @@ export async function fixFilePathExtension(filePath: string) {
     filePathWithExt = await traverse(filePath, 'index');
   }
   if (filePathWithExt && filePathWithExt !== 'dir') return filePathWithExt;
+}
+
+export function extractImportPathFromTextLine(textLine: vscode.TextLine): { path: string, range: vscode.Range } | undefined {
+  const pathRegs = [
+    /import\s+.*\s+from\s+['"](.*)['"]/,
+    /import\s*\(['"](.*)['"]\)/,
+    /require\s*\(['"](.*)['"]\)/,
+    /import\s+['"](.*)['"]/
+  ];
+  let execResult: RegExpMatchArray;
+  for (const pathReg of pathRegs) {
+    execResult = pathReg.exec(textLine.text);
+    if (execResult && execResult[1]) {
+      const filePath = execResult[1];
+      const filePathIndex = execResult[0].indexOf(filePath);
+      const start = execResult.index + filePathIndex;
+      const end = start + filePath.length;
+      return {
+        path: filePath,
+        range: new vscode.Range(textLine.lineNumber, start, textLine.lineNumber, end),
+      };
+    }
+  }
+}
+
+export function getFileZeroLocationFromFilePath(filePath: string) {
+  let uri = vscode.Uri.file(filePath);
+  let range = new vscode.Range(0, 0, 0, 0);
+  let location = new vscode.Location(uri, range);
+  return location;
 }

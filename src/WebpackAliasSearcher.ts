@@ -102,24 +102,6 @@ export default class WebpackAliasSearcher {
       return webpackConfigPath;
     }
   }
-  private _getWebpackConfigFromScript(script: string, projectDir: string) {
-    let tokens = script.split(' ').filter(t => t);
-    const webpackIndex = tokens.indexOf('webpack');
-    if (webpackIndex > -1) {
-      let webpackConfigPath: string;
-      const configIndex = tokens.indexOf('--config');
-      if (configIndex > webpackIndex && configIndex < tokens.length - 1) {
-        webpackConfigPath = tokens[configIndex + 1];
-      } else {
-        webpackConfigPath = './webpack.config.js';
-      }
-      webpackConfigPath = path.join(projectDir, webpackConfigPath);
-      try {
-        return require(webpackConfigPath);
-      } catch (error) {
-      }
-    }
-  }
   private _getAliasFromWebpackConfigs(webpackConfigs: any[]) {
     let alias = {};
     for(let webpackConfig of webpackConfigs) {
