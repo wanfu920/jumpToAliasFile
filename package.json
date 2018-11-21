@@ -1,7 +1,7 @@
 {
   "name": "jump-to-alias-file",
   "displayName": "Jump To Alias File",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "publisher": "wanfu",
   "engines": {
     "vscode": "^1.18.0"

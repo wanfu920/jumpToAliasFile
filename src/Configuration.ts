@@ -49,7 +49,9 @@ export default class Configuration {
     return this._configuration.get('alias') || {};
   }
   set alias(alias) {
-    this._configuration.update('alias', alias);
+    if (alias && Object.keys(this.alias).length) {
+      this._configuration.update('alias', alias);
+    }
   }
   dispose() {
     this._listenConfigChangeDispose.dispose();

@@ -69,7 +69,6 @@ export default class WebpackAliasSearcher {
           webpackConfigs.push(webpackConfig);
         }
       } catch (error) {
-
       }
     }
     return webpackConfigs;
