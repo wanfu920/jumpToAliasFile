@@ -9,6 +9,13 @@ export default class DefinitionProvider implements vscode.DefinitionProvider {
   provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     return this._getFileRealPosition(document, position);
   }
+  private _needJump(document: vscode.TextDocument, filePath: string): boolean {
+    if (filePath.startsWith('.') && (
+      /\.(less|scss|sass)$/.test(filePath) ||
+      document.fileName.endsWith('.vue')
+    )) return true;
+    return false;
+  }
   private async _getFileRealPosition(document: vscode.TextDocument, position: vscode.Position) {
     const textLine = document.lineAt(position)
     const pathObj = extractImportPathFromTextLine(textLine);
@@ -18,7 +25,8 @@ export default class DefinitionProvider implements vscode.DefinitionProvider {
       realFilePath = this._tranformAliasPath(pathObj.path);
 
       // 由于 vscode 不能正确识别 vue 文件的正常导入, 所以此处添加对 vue 文件的正常引入支持
-      if (!realFilePath && document.fileName.endsWith('.vue') && pathObj.path.startsWith('.')) {
+      // 由于 vscode 不能正确识别 less scss sass 文件的导入, 添加支持
+      if (!realFilePath && this._needJump(document, pathObj.path)) {
         realFilePath = path.resolve(document.fileName, '../', pathObj.path);
       }
     }
