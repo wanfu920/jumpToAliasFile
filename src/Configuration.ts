@@ -49,7 +49,7 @@ export default class Configuration {
     return this._configuration.get('alias') || {};
   }
   set alias(alias) {
-    if (alias && Object.keys(this.alias).length) {
+    if (alias && Object.keys(alias).length) {
       this._configuration.update('alias', alias);
     }
   }

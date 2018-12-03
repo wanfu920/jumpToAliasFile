@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const excludePaths = ['test', 'node_modules'];
+
+type webpackConfigPaths = {webpackConfigPath:string, projectDir:string}[];
 /**
  * 自动寻找 webpack alias 算法
  *
@@ -59,11 +61,18 @@ export default class WebpackAliasSearcher {
     }
     return alias;
   }
-  private _getWebpackConfigs(webpackConfigPaths: string[]) {
-    webpackConfigPaths = [...new Set(webpackConfigPaths)];
+  private _getWebpackConfigs(webpackConfigPaths: webpackConfigPaths) {
+    let newWebpackConfigPaths: Map<string, string> = new Map();
+    for (const {webpackConfigPath, projectDir} of webpackConfigPaths) {
+      newWebpackConfigPaths.set(webpackConfigPath, projectDir);
+    }
     let webpackConfigs: any[] = [];
-    for (let webpackConfigPath of webpackConfigPaths) {
+    for (let [webpackConfigPath, projectDir] of newWebpackConfigPaths) {
       try {
+        // 修复 create react app 使用 process.cwd() 导致路径获取不正确问题
+        // 修复 process.cwd() = projectDir
+        process.cwd = () => projectDir;
+        process.env.NODE_ENV = process.env.NODE_ENV || 'development';
         const webpackConfig = require(webpackConfigPath);
         if (webpackConfig) {
           webpackConfigs.push(webpackConfig);
@@ -74,13 +83,13 @@ export default class WebpackAliasSearcher {
     return webpackConfigs;
   }
   private _getWebpackConfigPathsFromPackage() {
-    let webpackConfigPaths: string[] = [];
+    let webpackConfigPaths: webpackConfigPaths = [];
     for(let [projectDir, { pkg }] of this._projects) {
       for (let key of Object.keys(pkg.scripts || {})) {
         const script = pkg.scripts[key];
         let webpackConfigPath = this._getWebpackConfigPathsFromScript(script, projectDir);
         if (webpackConfigPath) {
-          webpackConfigPaths.push(webpackConfigPath);
+          webpackConfigPaths.push({ webpackConfigPath, projectDir });
         }
       }
     }
@@ -111,11 +120,11 @@ export default class WebpackAliasSearcher {
     return alias;
   }
   private _getWebpackConfigsFromFileSearch() {
-    let webpackConfigPaths: string[] = [];
+    let webpackConfigPaths: webpackConfigPaths = [];
     for(let [projectDir, { pkg }] of this._projects) {
       let webpackConfigPath = this._traverseGetWebpackConfigsFromFileSearch(projectDir);
       if (webpackConfigPath.length) {
-        webpackConfigPaths.push(...webpackConfigPath);
+        webpackConfigPaths.push(...webpackConfigPath.map(t => ({webpackConfigPath: t, projectDir})));
       }
     }
     return webpackConfigPaths;
